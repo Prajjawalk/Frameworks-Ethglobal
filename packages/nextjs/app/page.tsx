@@ -47,7 +47,7 @@ export default async function Home({ searchParams }: NextServerPageProps) {
         </div>
       </FrameImage>
       <FrameButton>Generate</FrameButton>
-      <FrameInput text="put some text here" />
+      <FrameInput text="Enter playback ID" />
     </FrameContainer>
   );
 
@@ -104,7 +104,7 @@ export default async function Home({ searchParams }: NextServerPageProps) {
             frame = intialFrame;
           } else {
             frame = (
-              <FrameContainer postUrl="/txdata" pathname="/" state={initialState} previousFrame={previousFrame}>
+              <FrameContainer postUrl="/frames" pathname="/" state={initialState} previousFrame={previousFrame}>
                 <FrameImage src={existingRequest.data}>
                   {/* <div tw="w-full h-full bg-slate-700 text-white justify-center items-center flex">
                     The number is {existingRequest.data}
@@ -127,6 +127,7 @@ export default async function Home({ searchParams }: NextServerPageProps) {
           totalNFTMints = 3;
           totalviewers = 5;
           frame = analyticsFrame;
+          break;
         case "error":
           // if retry is true, then try to generate again and show checkStatusFrame
           if (searchParams?.retry === "true") {
