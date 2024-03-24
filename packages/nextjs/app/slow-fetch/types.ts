@@ -10,6 +10,11 @@ export type RandomNumberRequestStateValue =
       timestamp: number;
     }
   | {
+      error: string;
+      status: "analytics";
+      timestamp: number;
+    }
+  | {
       status: "pending";
       timestamp: number;
     };

@@ -974,7 +974,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@farcaster/core@npm:^0.14.3, @farcaster/core@npm:^0.14.7":
+"@farcaster/core@npm:^0.14.3, @farcaster/core@npm:^0.14.6, @farcaster/core@npm:^0.14.7":
   version: 0.14.8
   resolution: "@farcaster/core@npm:0.14.8"
   dependencies:
@@ -2203,10 +2203,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openzeppelin/contracts@npm:~4.8.1":
-  version: 4.8.3
-  resolution: "@openzeppelin/contracts@npm:4.8.3"
-  checksum: aea130d38d46840c5cbe3adbaa9a7ac645e4bd66ad3f3baf2fa78588c408d1a686170b3408c9e2e5e05530fba22ecdc00d7efb6b27852a8b29f91accbc0af255
+"@openzeppelin/contracts@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@openzeppelin/contracts@npm:5.0.0"
+  checksum: b182288466dfa1c66e227dcd9761d3205f6451bec5c3550783cfd2f6224d67b45e3d7cb01d7f26fb07cc236bb9fb10ce84268a77c5a5ceafd900b938643f55cd
   languageName: node
   linkType: hard
 
@@ -3424,7 +3424,7 @@ __metadata:
     "@nomicfoundation/hardhat-ethers": ~3.0.5
     "@nomicfoundation/hardhat-network-helpers": ~1.0.6
     "@nomicfoundation/hardhat-verify": ~2.0.3
-    "@openzeppelin/contracts": ~4.8.1
+    "@openzeppelin/contracts": ^5.0.0
     "@typechain/ethers-v5": ~10.1.0
     "@typechain/ethers-v6": ~0.5.1
     "@typechain/hardhat": ~9.1.0
@@ -3492,6 +3492,7 @@ __metadata:
     next: ~14.0.4
     next-themes: ~0.2.1
     nprogress: ~0.2.0
+    pinata-fdk: 3.6.1
     postcss: ~8.4.16
     prettier: ~2.8.4
     qrcode.react: ~3.1.0
@@ -3929,9 +3930,9 @@ __metadata:
   linkType: hard
 
 "@tsconfig/node10@npm:^1.0.7":
-  version: 1.0.9
-  resolution: "@tsconfig/node10@npm:1.0.9"
-  checksum: a33ae4dc2a621c0678ac8ac4bceb8e512ae75dac65417a2ad9b022d9b5411e863c4c198b6ba9ef659e14b9fb609bbec680841a2e84c1172df7a5ffcf076539df
+  version: 1.0.10
+  resolution: "@tsconfig/node10@npm:1.0.10"
+  checksum: 1204c05940c3669e897c1bcdf20668acc7fdbbeb41b4e8a3eb83ec486d6a442ba0f5d3b8122c93cb813fa498a232946ecb09e5a59a02828db3f1c27529563046
   languageName: node
   linkType: hard
 
@@ -5967,6 +5968,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"app-root-path@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "app-root-path@npm:3.1.0"
+  checksum: e3db3957aee197143a0f6c75e39fe89b19e7244f28b4f2944f7276a9c526d2a7ab2d115b4b2d70a51a65a9a3ca17506690e5b36f75a068a7e5a13f8c092389ba
+  languageName: node
+  linkType: hard
+
 "aproba@npm:^1.0.3 || ^2.0.0":
   version: 2.0.0
   resolution: "aproba@npm:2.0.0"
@@ -6277,6 +6285,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"auto-changelog@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "auto-changelog@npm:2.4.0"
+  dependencies:
+    commander: ^7.2.0
+    handlebars: ^4.7.7
+    node-fetch: ^2.6.1
+    parse-github-url: ^1.0.2
+    semver: ^7.3.5
+  bin:
+    auto-changelog: src/index.js
+  checksum: 554270a24b4bd2c7485d8529f1f66db9b11bcaada959b06c4af57b135eff197dfb393d8009c1f609d46d33e413d25fb50bc264c376d346cdf41486a8b675768b
+  languageName: node
+  linkType: hard
+
 "autoprefixer@npm:^10.0.1, autoprefixer@npm:~10.4.12":
   version: 10.4.19
   resolution: "autoprefixer@npm:10.4.19"
@@ -6320,7 +6343,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.1.3, axios@npm:^1.5.1":
+"axios@npm:^1.1.3, axios@npm:^1.5.1, axios@npm:^1.6.7":
   version: 1.6.8
   resolution: "axios@npm:1.6.8"
   dependencies:
@@ -7297,6 +7320,13 @@ __metadata:
   version: 4.1.1
   resolution: "commander@npm:4.1.1"
   checksum: d7b9913ff92cae20cb577a4ac6fcc121bd6223319e54a40f51a14740a681ad5c574fd29a57da478a5f234a6fa6c52cbf0b7c641353e03c648b1ae85ba670b977
+  languageName: node
+  linkType: hard
+
+"commander@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "commander@npm:7.2.0"
+  checksum: 53501cbeee61d5157546c0bef0fedb6cdfc763a882136284bed9a07225f09a14b82d2a84e7637edfd1a679fb35ed9502fd58ef1d091e6287f60d790147f68ddc
   languageName: node
   linkType: hard
 
@@ -10378,7 +10408,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"handlebars@npm:^4.0.1":
+"handlebars@npm:^4.0.1, handlebars@npm:^4.7.7":
   version: 4.7.8
   resolution: "handlebars@npm:4.7.8"
   dependencies:
@@ -10670,6 +10700,13 @@ __metadata:
   dependencies:
     react-is: ^16.7.0
   checksum: b1538270429b13901ee586aa44f4cc3ecd8831c061d06cb8322e50ea17b3f5ce4d0e2e66394761e6c8e152cd8c34fb3b4b690116c6ce2bd45b18c746516cb9e8
+  languageName: node
+  linkType: hard
+
+"hono@npm:^4.0.8":
+  version: 4.1.3
+  resolution: "hono@npm:4.1.3"
+  checksum: ec33dc5518be56e3f4aa223242b23c5138303d4e0582ebd4d48a208197ac464382e0925500f15537a45cb83812b006c167241450955d4cf0d605c54fde79d380
   languageName: node
   linkType: hard
 
@@ -13569,6 +13606,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"parse-github-url@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "parse-github-url@npm:1.0.2"
+  bin:
+    parse-github-url: ./cli.js
+  checksum: a19b8bc6f8908a24cb63a10ff90cd39cec0745615a272ec686803684653be34eb3e638e31a66c8ee3a9568082ff686eaf010181688000a6274c86a23e9220f2f
+  languageName: node
+  linkType: hard
+
 "parse-json@npm:^5.0.0":
   version: 5.2.0
   resolution: "parse-json@npm:5.2.0"
@@ -13798,6 +13844,23 @@ __metadata:
   version: 5.0.0
   resolution: "pify@npm:5.0.0"
   checksum: 443e3e198ad6bfa8c0c533764cf75c9d5bc976387a163792fb553ffe6ce923887cf14eebf5aea9b7caa8eab930da8c33612990ae85bd8c2bc18bedb9eae94ecb
+  languageName: node
+  linkType: hard
+
+"pinata-fdk@npm:3.6.1":
+  version: 3.6.1
+  resolution: "pinata-fdk@npm:3.6.1"
+  dependencies:
+    "@farcaster/core": ^0.14.6
+    app-root-path: ^3.1.0
+    auto-changelog: ^2.4.0
+    axios: ^1.6.7
+    form-data: ^4.0.0
+    hono: ^4.0.8
+    path: ^0.12.7
+  bin:
+    pin: dist/pin.js
+  checksum: f9f51531d35a2377bcb81c7750443fc5b896abfd946802b0c44141b4323c0ffd865fedad8e887001650d68e4c144bf6eecb99bbb02a00155406841b6a2a03db5
   languageName: node
   linkType: hard
 

@@ -32,12 +32,18 @@ export default async function Home({ searchParams }: NextServerPageProps) {
   }
 
   let frame: React.ReactElement;
+  let totalviewers;
+  let totalNFTMints;
+  let totalLiveViewers;
 
   const intialFrame = (
     <FrameContainer postUrl="/frames" pathname="/" state={initialState} previousFrame={previousFrame}>
       <FrameImage>
         <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">
-          Enter video URL and click `Generate` to generate gif.
+          NFTfy your favourite livestream.
+        </div>
+        <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">
+          Enter playback ID and click `Generate` to generate gif.
         </div>
       </FrameImage>
       <FrameButton>Generate</FrameButton>
@@ -51,6 +57,22 @@ export default async function Home({ searchParams }: NextServerPageProps) {
         <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">Loading...</div>
       </FrameImage>
       <FrameButton>Check status</FrameButton>
+    </FrameContainer>
+  );
+
+  const analyticsFrame = (
+    <FrameContainer postUrl="/frames" pathname="/" state={initialState} previousFrame={previousFrame}>
+      <FrameImage>
+        <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">Viewers analytics</div>
+        <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">Total Viewers: {totalviewers}</div>
+        <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">
+          Total NFT mints: {totalNFTMints}
+        </div>
+        <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">
+          Total Live viewers: {totalLiveViewers}
+        </div>
+      </FrameImage>
+      <FrameButton target={"/frames?reset=true"}>Home</FrameButton>
     </FrameContainer>
   );
 
@@ -82,13 +104,17 @@ export default async function Home({ searchParams }: NextServerPageProps) {
             frame = intialFrame;
           } else {
             frame = (
-              <FrameContainer postUrl="/frames" pathname="/" state={initialState} previousFrame={previousFrame}>
+              <FrameContainer postUrl="/txdata" pathname="/" state={initialState} previousFrame={previousFrame}>
                 <FrameImage src={existingRequest.data}>
                   {/* <div tw="w-full h-full bg-slate-700 text-white justify-center items-center flex">
                     The number is {existingRequest.data}
                   </div> */}
                 </FrameImage>
+                <FrameInput text="Enter NFT receiver's address" />
                 <FrameButton target={"/frames?reset=true"}>Reset</FrameButton>
+                <FrameButton target={"/txdata"} action="tx">
+                  Mint NFT
+                </FrameButton>
                 <FrameButton action="link" target={existingRequest.data}>
                   Download
                 </FrameButton>
@@ -96,6 +122,11 @@ export default async function Home({ searchParams }: NextServerPageProps) {
             );
           }
           break;
+        case "analytics":
+          totalLiveViewers = 1;
+          totalNFTMints = 3;
+          totalviewers = 5;
+          frame = analyticsFrame;
         case "error":
           // if retry is true, then try to generate again and show checkStatusFrame
           if (searchParams?.retry === "true") {

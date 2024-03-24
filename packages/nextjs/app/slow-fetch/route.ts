@@ -8,9 +8,15 @@ import { exec } from "child_process";
 import { getFrameMessage } from "frames.js";
 import fs from "fs";
 import { Livepeer } from "livepeer";
+import { PinataFDK } from "pinata-fdk";
 
 const MAXIMUM_KV_RESULT_LIFETIME_IN_SECONDS = 10 * 60; // 10 minutes
 const pinata = new pinataSDK({ pinataJWTKey: process.env.PINATA_JWT });
+
+const fdk = new PinataFDK({
+  pinata_jwt: String(process.env.PINATA_JWT),
+  pinata_gateway: String(process.env.PINATA_GATEWAY),
+});
 
 async function pollUrlUntilResponse(url: string, expectedResponse: string, interval: number, maxAttempts: number) {
   let attempts = 0;
@@ -39,7 +45,6 @@ async function pollUrlUntilResponse(url: string, expectedResponse: string, inter
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  console.log("reached post");
   // verify independently
   const frameMessage = await getFrameMessage(body.postBody, {
     hubHttpUrl: DEFAULT_DEBUGGER_HUB_URL,
@@ -48,6 +53,13 @@ export async function POST(req: NextRequest) {
   const uniqueId = `fid:${frameMessage.requesterFid}`;
 
   try {
+    const frame_id = `${frameMessage.requesterFid}`;
+    const custom_id = "frameNFT";
+
+    console.log("sending analytics...");
+    console.log(body.postBody);
+    const analyticsRes = await fdk.sendAnalytics(frame_id, body.postBody, custom_id);
+    console.log(analyticsRes);
     const playbackId = frameMessage.inputText;
     if (!playbackId) {
       return NextResponse.json({ message: "Video URL is required" }, { status: 400 });
@@ -81,8 +93,8 @@ export async function POST(req: NextRequest) {
     const maxAttempts = 100;
 
     const downloadUrl = await pollUrlUntilResponse(url, expectedResponse, pollingInterval, maxAttempts);
-    console.log(downloadUrl);
-    // // fetch the playback info on the server
+
+    // fetch the playback info on the server
     // const playbackInfo = await livepeer.playback.get(playbackId);
     // const videoUrl = playbackInfo.playbackInfo?.meta.source[0]?.url;
     const videoUrl = downloadUrl;
