@@ -11,14 +11,11 @@ const imageUrl = `${baseUrl}/thumbnail.jpg`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: {
-    default: "Scaffold-ETH 2 App",
-    template: "%s | Scaffold-ETH 2",
-  },
-  description: "Built with 🏗 Scaffold-ETH 2",
+  title: "watch-clip-mint frame",
+  description: "A simple farcaster frame to convert livepeer video clip to gif built with 🏗 Scaffold-ETH 2",
   openGraph: {
     title: {
-      default: "Scaffold-ETH 2 App",
+      default: "watch-clip-mint frame",
       template: "%s | Scaffold-ETH 2",
     },
     description: "Built with 🏗 Scaffold-ETH 2",

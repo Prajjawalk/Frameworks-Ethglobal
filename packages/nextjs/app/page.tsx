@@ -1,71 +1,149 @@
-"use client";
-
 import Link from "next/link";
-import type { NextPage } from "next";
-import { useAccount } from "wagmi";
-import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Address } from "~~/components/scaffold-eth";
+import { DEFAULT_DEBUGGER_HUB_URL, createDebugUrl } from "./debug";
+import { RandomNumberRequestStateValue } from "./slow-fetch/types";
+import { currentURL } from "./utils";
+import { kv } from "@vercel/kv";
+import {
+  FrameButton,
+  FrameContainer,
+  FrameImage,
+  FrameInput,
+  NextServerPageProps,
+  getFrameMessage,
+  getPreviousFrame,
+} from "frames.js/next/server";
 
-const Home: NextPage = () => {
-  const { address: connectedAddress } = useAccount();
+// eslint-disable-next-line @typescript-eslint/ban-types
+type State = {};
 
-  return (
-    <>
-      <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
-          </h1>
-          <div className="flex justify-center items-center space-x-2">
-            <p className="my-2 font-medium">Connected Address:</p>
-            <Address address={connectedAddress} />
-          </div>
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/app/page.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
-          </p>
+const initialState: State = {} as const;
+
+// This is a react server component only
+export default async function Home({ searchParams }: NextServerPageProps) {
+  const url = currentURL("/");
+  const previousFrame = getPreviousFrame<State>(searchParams);
+
+  const frameMessage = await getFrameMessage(previousFrame.postBody, {
+    hubHttpUrl: DEFAULT_DEBUGGER_HUB_URL,
+  });
+
+  if (frameMessage && !frameMessage?.isValid) {
+    throw new Error("Invalid frame payload");
+  }
+
+  let frame: React.ReactElement;
+
+  const intialFrame = (
+    <FrameContainer postUrl="/frames" pathname="/" state={initialState} previousFrame={previousFrame}>
+      <FrameImage>
+        <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">
+          Enter video URL and click `Generate` to generate gif.
         </div>
-
-        <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <BugAntIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contracts
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <MagnifyingGlassIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Explore your local transactions with the{" "}
-                <Link href="/blockexplorer" passHref className="link">
-                  Block Explorer
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+      </FrameImage>
+      <FrameButton>Generate</FrameButton>
+      <FrameInput text="put some text here" />
+    </FrameContainer>
   );
-};
 
-export default Home;
+  const checkStatusFrame = (
+    <FrameContainer postUrl="/frames" pathname="/" state={initialState} previousFrame={previousFrame}>
+      <FrameImage>
+        <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">Loading...</div>
+      </FrameImage>
+      <FrameButton>Check status</FrameButton>
+    </FrameContainer>
+  );
+
+  const errorFrame = (error: string) => (
+    <FrameContainer postUrl="/frames" pathname="/" state={initialState} previousFrame={previousFrame}>
+      <FrameImage>{error}</FrameImage>
+      <FrameButton target={"/frames?retry=true"}>Retry</FrameButton>
+    </FrameContainer>
+  );
+
+  if (frameMessage) {
+    const { requesterFid } = frameMessage;
+
+    const uniqueId = `fid:${requesterFid}`;
+
+    const existingRequest = await kv.get<RandomNumberRequestStateValue>(uniqueId);
+
+    if (existingRequest) {
+      switch (existingRequest.status) {
+        case "pending":
+          frame = checkStatusFrame;
+          break;
+        case "success":
+          // if retry is true, then try to generate again and show checkStatusFrame
+          if (searchParams?.reset === "true") {
+            // reset to initial state
+            await kv.del(uniqueId);
+
+            frame = intialFrame;
+          } else {
+            frame = (
+              <FrameContainer postUrl="/frames" pathname="/" state={initialState} previousFrame={previousFrame}>
+                <FrameImage src={existingRequest.data}>
+                  {/* <div tw="w-full h-full bg-slate-700 text-white justify-center items-center flex">
+                    The number is {existingRequest.data}
+                  </div> */}
+                </FrameImage>
+                <FrameButton target={"/frames?reset=true"}>Reset</FrameButton>
+                <FrameButton action="link" target={existingRequest.data}>
+                  Download
+                </FrameButton>
+              </FrameContainer>
+            );
+          }
+          break;
+        case "error":
+          // if retry is true, then try to generate again and show checkStatusFrame
+          if (searchParams?.retry === "true") {
+            // reset to initial state
+            await kv.del(uniqueId);
+
+            frame = intialFrame;
+          } else {
+            frame = errorFrame(existingRequest.error);
+          }
+          break;
+      }
+    } else {
+      await kv.set<RandomNumberRequestStateValue>(
+        uniqueId,
+        {
+          status: "pending",
+          timestamp: new Date().getTime(),
+        },
+        // set as pending for one minute
+        { ex: 60 },
+      );
+
+      // start request, don't await it! Return a loading page, let this run in the background
+      fetch(new URL("/slow-fetch", process.env.NEXT_PUBLIC_HOST).toString(), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          postBody: JSON.parse(searchParams?.postBody as string),
+        }),
+      });
+
+      frame = checkStatusFrame;
+    }
+  } else {
+    frame = intialFrame;
+  }
+
+  // then, when done, return next frame
+  return (
+    <div className="p-4">
+      frames.js starter kit with slow requests.{" "}
+      <Link href={createDebugUrl(url)} className="underline">
+        Debug
+      </Link>
+      {frame}
+    </div>
+  );
+}
