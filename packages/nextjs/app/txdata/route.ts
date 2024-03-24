@@ -29,14 +29,16 @@ export async function POST(req: NextRequest): Promise<NextResponse<TransactionTa
     ],
   });
 
-  await kv.set<RandomNumberRequestStateValue>(
-    uniqueId,
-    {
-      status: "analytics",
-      timestamp: new Date().getTime(),
-    },
-    { ex: MAXIMUM_KV_RESULT_LIFETIME_IN_SECONDS },
-  );
+  if (existingRequest?.status == "success") {
+    await kv.set<RandomNumberRequestStateValue>(
+      uniqueId,
+      {
+        status: "analytics",
+        timestamp: new Date().getTime(),
+      },
+      { ex: MAXIMUM_KV_RESULT_LIFETIME_IN_SECONDS },
+    );
+  }
 
   return NextResponse.json({
     chainId: "eip155:84532",

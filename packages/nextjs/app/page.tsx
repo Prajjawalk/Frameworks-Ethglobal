@@ -39,10 +39,9 @@ export default async function Home({ searchParams }: NextServerPageProps) {
   const intialFrame = (
     <FrameContainer postUrl="/frames" pathname="/" state={initialState} previousFrame={previousFrame}>
       <FrameImage>
-        <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">
-          NFTfy your favourite livestream.
-        </div>
-        <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">
+        <div tw="w-full bg-slate-700 text-white justify-center items-center">NFTfy your favourite livestream with</div>
+        <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">LiveStreamNFT</div>
+        <div tw="w-full bg-slate-700 text-white justify-center items-center">
           Enter playback ID and click `Generate` to generate gif.
         </div>
       </FrameImage>
