@@ -32,17 +32,19 @@ export default async function Home({ searchParams }: NextServerPageProps) {
   }
 
   let frame: React.ReactElement;
-  let totalviewers;
-  let totalNFTMints;
-  let totalLiveViewers;
 
   const intialFrame = (
     <FrameContainer postUrl="/frames" pathname="/" state={initialState} previousFrame={previousFrame}>
       <FrameImage>
-        <div tw="w-full bg-slate-700 text-white justify-center items-center">NFTfy your favourite livestream with</div>
+        <div tw="w-full bg-slate-700 text-white justify-center items-center">
+          NFTfy your favourite livepeer video with
+        </div>
         <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">LiveStreamNFT</div>
         <div tw="w-full bg-slate-700 text-white justify-center items-center">
           Enter playback ID and click `Generate` to generate gif.
+        </div>
+        <div tw="w-full bg-slate-700 text-white justify-center items-center">
+          You can try out with `0b79ukgd9vf7t0ae`
         </div>
       </FrameImage>
       <FrameButton>Generate</FrameButton>
@@ -56,22 +58,6 @@ export default async function Home({ searchParams }: NextServerPageProps) {
         <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">Loading...</div>
       </FrameImage>
       <FrameButton>Check status</FrameButton>
-    </FrameContainer>
-  );
-
-  const analyticsFrame = (
-    <FrameContainer postUrl="/frames" pathname="/" state={initialState} previousFrame={previousFrame}>
-      <FrameImage>
-        <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">Viewers analytics</div>
-        <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">Total Viewers: {totalviewers}</div>
-        <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">
-          Total NFT mints: {totalNFTMints}
-        </div>
-        <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">
-          Total Live viewers: {totalLiveViewers}
-        </div>
-      </FrameImage>
-      <FrameButton target={"/frames?reset=true"}>Home</FrameButton>
     </FrameContainer>
   );
 
@@ -114,18 +100,17 @@ export default async function Home({ searchParams }: NextServerPageProps) {
                 <FrameButton target={"/txdata"} action="tx">
                   Mint NFT
                 </FrameButton>
+                {frameMessage.transactionId ? (
+                  <FrameButton action="link" target={`${process.env.BLOCKEXPLORER_URL}/${frameMessage.transactionId}`}>
+                    Transaction
+                  </FrameButton>
+                ) : null}
                 <FrameButton action="link" target={existingRequest.data}>
                   Download
                 </FrameButton>
               </FrameContainer>
             );
           }
-          break;
-        case "analytics":
-          totalLiveViewers = 1;
-          totalNFTMints = 3;
-          totalviewers = 5;
-          frame = analyticsFrame;
           break;
         case "error":
           // if retry is true, then try to generate again and show checkStatusFrame

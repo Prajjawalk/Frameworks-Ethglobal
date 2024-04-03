@@ -18,30 +18,30 @@ const fdk = new PinataFDK({
   pinata_gateway: String(process.env.PINATA_GATEWAY),
 });
 
-async function pollUrlUntilResponse(url: string, expectedResponse: string, interval: number, maxAttempts: number) {
-  let attempts = 0;
-  // const axios = require("axios");
-  while (attempts < maxAttempts) {
-    try {
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${process.env.LIVEPEER_API_KEY}`,
-        },
-      });
-      if (response.data.status.phase == expectedResponse) {
-        console.log("got the download url...");
-        return response.data.downloadUrl;
-      }
-    } catch (error) {
-      // Handle errors if necessary
-      console.error("Error:", error);
-      throw new Error("Error polling url");
-    }
-    await new Promise(resolve => setTimeout(resolve, interval));
-    attempts++;
-  }
-  throw new Error(`Max attempts (${maxAttempts}) reached without receiving the expected response.`);
-}
+// async function pollUrlUntilResponse(url: string, expectedResponse: string, interval: number, maxAttempts: number) {
+//   let attempts = 0;
+//   // const axios = require("axios");
+//   while (attempts < maxAttempts) {
+//     try {
+//       const response = await axios.get(url, {
+//         headers: {
+//           Authorization: `Bearer ${process.env.LIVEPEER_API_KEY}`,
+//         },
+//       });
+//       if (response.data.status.phase == expectedResponse) {
+//         console.log("got the download url...");
+//         return response.data.downloadUrl;
+//       }
+//     } catch (error) {
+//       // Handle errors if necessary
+//       console.error("Error:", error);
+//       throw new Error("Error polling url");
+//     }
+//     await new Promise(resolve => setTimeout(resolve, interval));
+//     attempts++;
+//   }
+//   throw new Error(`Max attempts (${maxAttempts}) reached without receiving the expected response.`);
+// }
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
     console.log(analyticsRes);
     const playbackId = frameMessage.inputText;
     if (!playbackId) {
-      return NextResponse.json({ message: "Video URL is required" }, { status: 400 });
+      return NextResponse.json({ message: "Playback ID is required" }, { status: 400 });
     }
 
     const livepeer = new Livepeer({
@@ -70,41 +70,41 @@ export async function POST(req: NextRequest) {
     });
 
     //clipping random livestream
-    console.log("creating clip");
-    const result = await livepeer.stream.createClip({
-      /**
-       * Playback ID of the stream or asset to clip
-       */
-      playbackId: playbackId,
-      /**
-       * Start time of the clip in milliseconds
-       */
-      startTime: Date.now() - 7000,
-      /**
-       * End time of the clip in milliseconds
-       */
-      endTime: Date.now() - 5000,
-    });
-    console.log(result.object?.asset);
+    // console.log("creating clip");
+    // const result = await livepeer.stream.createClip({
+    //   /**
+    //    * Playback ID of the stream or asset to clip
+    //    */
+    //   playbackId: playbackId,
+    //   /**
+    //    * Start time of the clip in milliseconds
+    //    */
+    //   startTime: Date.now() - 7000,
+    //   /**
+    //    * End time of the clip in milliseconds
+    //    */
+    //   endTime: Date.now() - 5000,
+    // });
+    // console.log(result.object?.asset);
 
-    const url = `https://livepeer.studio/api/asset/${result.object?.asset.id}`;
-    const expectedResponse = "ready";
-    const pollingInterval = 5000; // 5 seconds (in milliseconds)
-    const maxAttempts = 100;
+    // const url = `https://livepeer.studio/api/asset/${result.object?.asset.id}`;
+    // const expectedResponse = "ready";
+    // const pollingInterval = 5000; // 5 seconds (in milliseconds)
+    // const maxAttempts = 100;
 
-    const downloadUrl = await pollUrlUntilResponse(url, expectedResponse, pollingInterval, maxAttempts);
+    // const downloadUrl = await pollUrlUntilResponse(url, expectedResponse, pollingInterval, maxAttempts);
 
     // fetch the playback info on the server
-    // const playbackInfo = await livepeer.playback.get(playbackId);
-    // const videoUrl = playbackInfo.playbackInfo?.meta.source[0]?.url;
-    const videoUrl = downloadUrl;
+    const playbackInfo = await livepeer.playback.get(playbackId);
+    const videoUrl = playbackInfo.playbackInfo?.meta.source[0]?.url;
+    // const videoUrl = downloadUrl;
 
     // console.log("playback info ", playbackInfo.playbackInfo?.meta.source[0]);
 
     // Download MP4 video file
-    const mp4FilePath = "video.mp4";
+    const mp4FilePath = `video-${playbackId}.mp4`;
     const mp4FileStream = fs.createWriteStream(mp4FilePath);
-    const response = await axios.get(videoUrl, { responseType: "stream" });
+    const response = await axios.get(String(videoUrl), { responseType: "stream" });
 
     response.data.pipe(mp4FileStream);
 
@@ -117,7 +117,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Convert MP4 to GIF using FFmpeg
-    const gifFilePath = "public/output.gif";
+    const gifFilePath = `public/output-${playbackId}.gif`;
     await new Promise<void>((resolve, reject) => {
       exec(
         `ffmpeg -i ${mp4FilePath} -vf "fps=10,scale=320:-1:flags=lanczos" -c:v gif -loop 0 ${gifFilePath}`,

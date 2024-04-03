@@ -5,7 +5,7 @@ import { TransactionTargetResponse, getFrameMessage } from "frames.js";
 import { encodeFunctionData } from "viem";
 import deployedContracts from "~~/contracts/deployedContracts";
 
-const MAXIMUM_KV_RESULT_LIFETIME_IN_SECONDS = 10 * 60; // 10 minutes
+// const MAXIMUM_KV_RESULT_LIFETIME_IN_SECONDS = 10 * 60; // 10 minutes
 export async function POST(req: NextRequest): Promise<NextResponse<TransactionTargetResponse>> {
   const json = await req.json();
 
@@ -29,16 +29,16 @@ export async function POST(req: NextRequest): Promise<NextResponse<TransactionTa
     ],
   });
 
-  if (existingRequest?.status == "success") {
-    await kv.set<RandomNumberRequestStateValue>(
-      uniqueId,
-      {
-        status: "analytics",
-        timestamp: new Date().getTime(),
-      },
-      { ex: MAXIMUM_KV_RESULT_LIFETIME_IN_SECONDS },
-    );
-  }
+  // if (existingRequest?.status == "success") {
+  //   await kv.set<RandomNumberRequestStateValue>(
+  //     uniqueId,
+  //     {
+  //       status: "completed",
+  //       timestamp: new Date().getTime(),
+  //     },
+  //     { ex: MAXIMUM_KV_RESULT_LIFETIME_IN_SECONDS },
+  //   );
+  // }
 
   return NextResponse.json({
     chainId: "eip155:84532",

@@ -130,6 +130,16 @@ const config: HardhatUserConfig = {
   // configuration for harhdat-verify plugin
   etherscan: {
     apiKey: `${etherscanApiKey}`,
+    customChains: [
+      {
+        network: "baseSepolia",
+        chainId: 84532,
+        urls: {
+          apiURL: "https://api-sepolia.basescan.org/api",
+          browserURL: "https://sepolia.basescan.org/",
+        },
+      },
+    ],
   },
   // configuration for etherscan-verify from hardhat-deploy plugin
   verify: {
