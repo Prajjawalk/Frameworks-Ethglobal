@@ -1,7 +1,6 @@
-import Link from "next/link";
-import { DEFAULT_DEBUGGER_HUB_URL, createDebugUrl } from "./debug";
+// import { DEFAULT_DEBUGGER_HUB_URL } from "./debug";
 import { RandomNumberRequestStateValue } from "./slow-fetch/types";
-import { currentURL } from "./utils";
+// import { currentURL } from "./utils";
 import { kv } from "@vercel/kv";
 import {
   FrameButton,
@@ -20,11 +19,11 @@ const initialState: State = {} as const;
 
 // This is a react server component only
 export default async function Home({ searchParams }: NextServerPageProps) {
-  const url = currentURL("/");
+  // const url = currentURL("/");
   const previousFrame = getPreviousFrame<State>(searchParams);
 
   const frameMessage = await getFrameMessage(previousFrame.postBody, {
-    hubHttpUrl: DEFAULT_DEBUGGER_HUB_URL,
+    hubHttpUrl: process.env.PINATA_HUB,
   });
 
   if (frameMessage && !frameMessage?.isValid) {
@@ -155,10 +154,7 @@ export default async function Home({ searchParams }: NextServerPageProps) {
   // then, when done, return next frame
   return (
     <div className="p-4">
-      frames.js starter kit with slow requests.{" "}
-      <Link href={createDebugUrl(url)} className="underline">
-        Debug
-      </Link>
+      Livepeer video to NFT frame.
       {frame}
     </div>
   );
