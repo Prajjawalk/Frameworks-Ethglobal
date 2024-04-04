@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
     // console.log("playback info ", playbackInfo.playbackInfo?.meta.source[0]);
 
     // Download MP4 video file
-    const mp4FilePath = `video-${playbackId}.mp4`;
+    const mp4FilePath = `/tmp/video-${playbackId}.mp4`;
     const mp4FileStream = fs.createWriteStream(mp4FilePath);
     const response = await axios.get(String(videoUrl), { responseType: "stream" });
 
@@ -118,7 +118,7 @@ export async function POST(req: NextRequest) {
     console.log("mp4 file downloaded...");
 
     // Convert MP4 to GIF using FFmpeg
-    const gifFilePath = `output-${playbackId}.gif`;
+    const gifFilePath = `/tmp/output-${playbackId}.gif`;
     await new Promise<void>((resolve, reject) => {
       exec(
         `npx ffmpeg -i ${mp4FilePath} -vf "fps=10,scale=320:-1:flags=lanczos" -c:v gif -loop 0 ${gifFilePath}`,
