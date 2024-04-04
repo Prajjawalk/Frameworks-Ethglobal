@@ -1,5 +1,6 @@
 // import { DEFAULT_DEBUGGER_HUB_URL } from "./debug";
 import { RandomNumberRequestStateValue } from "./slow-fetch/types";
+import "@ffmpeg-installer/ffmpeg";
 // import { currentURL } from "./utils";
 import { kv } from "@vercel/kv";
 import {

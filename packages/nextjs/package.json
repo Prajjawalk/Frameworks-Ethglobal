@@ -16,6 +16,7 @@
   "dependencies": {
     "@ethersproject/providers": "~5.7.2",
     "@farcaster/core": "^0.14.3",
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@heroicons/react": "~2.0.11",
     "@livepeer/react": "^4.1.11",
     "@noble/ed25519": "^2.0.0",
