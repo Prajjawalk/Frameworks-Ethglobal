@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
     const gifFilePath = `/tmp/output-${playbackId}.gif`;
     await new Promise<void>((resolve, reject) => {
       exec(
-        `ffmpeg -i ${mp4FilePath} -vf "fps=10,scale=320:-1:flags=lanczos" -c:v gif -loop 0 ${gifFilePath}`,
+        `npx ffmpeg -i ${mp4FilePath} -vf "fps=10,scale=320:-1:flags=lanczos" -c:v gif -loop 0 ${gifFilePath}`,
         error => {
           if (error) {
             console.log(error);
