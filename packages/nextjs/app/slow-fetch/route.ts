@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { DEFAULT_DEBUGGER_HUB_URL } from "../debug";
+// import { DEFAULT_DEBUGGER_HUB_URL } from "../debug";
 import { RandomNumberRequestStateValue } from "./types";
 import pinataSDK from "@pinata/sdk";
 import { kv } from "@vercel/kv";
@@ -46,9 +46,7 @@ const fdk = new PinataFDK({
 export async function POST(req: NextRequest) {
   const body = await req.json();
   // verify independently
-  const frameMessage = await getFrameMessage(body.postBody, {
-    hubHttpUrl: DEFAULT_DEBUGGER_HUB_URL,
-  });
+  const frameMessage = await getFrameMessage(body.postBody);
 
   const uniqueId = `fid:${frameMessage.requesterFid}`;
 
