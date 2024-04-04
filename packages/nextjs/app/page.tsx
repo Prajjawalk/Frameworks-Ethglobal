@@ -12,6 +12,8 @@ import {
   getPreviousFrame,
 } from "frames.js/next/server";
 
+// import { currentURL } from "./utils";
+
 // eslint-disable-next-line @typescript-eslint/ban-types
 type State = {};
 
@@ -22,9 +24,7 @@ export default async function Home({ searchParams }: NextServerPageProps) {
   // const url = currentURL("/");
   const previousFrame = getPreviousFrame<State>(searchParams);
 
-  const frameMessage = await getFrameMessage(previousFrame.postBody, {
-    hubHttpUrl: process.env.PINATA_HUB,
-  });
+  const frameMessage = await getFrameMessage(previousFrame.postBody);
 
   if (frameMessage && !frameMessage?.isValid) {
     throw new Error("Invalid frame payload");
@@ -33,7 +33,12 @@ export default async function Home({ searchParams }: NextServerPageProps) {
   let frame: React.ReactElement;
 
   const intialFrame = (
-    <FrameContainer postUrl="/frames" pathname="/" state={initialState} previousFrame={previousFrame}>
+    <FrameContainer
+      postUrl={new URL("/frames", process.env.NEXT_PUBLIC_HOST).toString()}
+      pathname="/"
+      state={initialState}
+      previousFrame={previousFrame}
+    >
       <FrameImage>
         <div tw="w-full bg-slate-700 text-white justify-center items-center">
           NFTfy your favourite livepeer video with
@@ -52,7 +57,12 @@ export default async function Home({ searchParams }: NextServerPageProps) {
   );
 
   const checkStatusFrame = (
-    <FrameContainer postUrl="/frames" pathname="/" state={initialState} previousFrame={previousFrame}>
+    <FrameContainer
+      postUrl={new URL("/frames", process.env.NEXT_PUBLIC_HOST).toString()}
+      pathname="/"
+      state={initialState}
+      previousFrame={previousFrame}
+    >
       <FrameImage>
         <div tw="w-full h-full bg-slate-700 text-white justify-center items-center">Loading...</div>
       </FrameImage>
@@ -61,7 +71,12 @@ export default async function Home({ searchParams }: NextServerPageProps) {
   );
 
   const errorFrame = (error: string) => (
-    <FrameContainer postUrl="/frames" pathname="/" state={initialState} previousFrame={previousFrame}>
+    <FrameContainer
+      postUrl={new URL("/frames", process.env.NEXT_PUBLIC_HOST).toString()}
+      pathname="/"
+      state={initialState}
+      previousFrame={previousFrame}
+    >
       <FrameImage>{error}</FrameImage>
       <FrameButton target={"/frames?retry=true"}>Retry</FrameButton>
     </FrameContainer>
@@ -88,7 +103,12 @@ export default async function Home({ searchParams }: NextServerPageProps) {
             frame = intialFrame;
           } else {
             frame = (
-              <FrameContainer postUrl="/frames" pathname="/" state={initialState} previousFrame={previousFrame}>
+              <FrameContainer
+                postUrl={new URL("/frames", process.env.NEXT_PUBLIC_HOST).toString()}
+                pathname="/"
+                state={initialState}
+                previousFrame={previousFrame}
+              >
                 <FrameImage src={existingRequest.data}>
                   {/* <div tw="w-full h-full bg-slate-700 text-white justify-center items-center flex">
                     The number is {existingRequest.data}
