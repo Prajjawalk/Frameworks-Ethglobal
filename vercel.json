@@ -1,5 +1,5 @@
 {
-  "installCommand": "yarn install --frozen-lockfile",
+  "installCommand": "apt-get install ffmpeg && yarn install --frozen-lockfile",
   "buildCommand": "yarn next:build",
   "outputDirectory": "packages/nextjs/.next",
   "framework": "nextjs"
