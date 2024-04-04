@@ -8,15 +8,16 @@ import { exec } from "child_process";
 import { getFrameMessage } from "frames.js";
 import fs from "fs";
 import { Livepeer } from "livepeer";
-import { PinataFDK } from "pinata-fdk";
+
+// import { PinataFDK } from "pinata-fdk";
 
 const MAXIMUM_KV_RESULT_LIFETIME_IN_SECONDS = 10 * 60; // 10 minutes
 const pinata = new pinataSDK({ pinataJWTKey: process.env.PINATA_JWT });
 
-const fdk = new PinataFDK({
-  pinata_jwt: String(process.env.PINATA_JWT),
-  pinata_gateway: String(process.env.PINATA_GATEWAY),
-});
+// const fdk = new PinataFDK({
+//   pinata_jwt: String(process.env.PINATA_JWT),
+//   pinata_gateway: String(process.env.PINATA_GATEWAY),
+// });
 
 // async function pollUrlUntilResponse(url: string, expectedResponse: string, interval: number, maxAttempts: number) {
 //   let attempts = 0;
@@ -51,13 +52,13 @@ export async function POST(req: NextRequest) {
   const uniqueId = `fid:${frameMessage.requesterFid}`;
 
   try {
-    const frame_id = `${frameMessage.requesterFid}`;
-    const custom_id = "frameNFT";
+    // const frame_id = `${frameMessage.requesterFid}`;
+    // const custom_id = "frameNFT";
 
     console.log("sending analytics...");
     console.log(body.postBody);
-    const analyticsRes = await fdk.sendAnalytics(frame_id, body.postBody, custom_id);
-    console.log(analyticsRes);
+    // const analyticsRes = await fdk.sendAnalytics(frame_id, body.postBody, custom_id);
+    // console.log(analyticsRes);
     const playbackId = frameMessage.inputText;
     if (!playbackId) {
       return NextResponse.json({ message: "Playback ID is required" }, { status: 400 });
@@ -113,6 +114,7 @@ export async function POST(req: NextRequest) {
         reject(e);
       });
     });
+    console.log("mp4 file downloaded...");
 
     // Convert MP4 to GIF using FFmpeg
     const gifFilePath = `tmp/output-${playbackId}.gif`;
@@ -129,6 +131,7 @@ export async function POST(req: NextRequest) {
         },
       );
     });
+    console.log("gif generated...");
 
     const readableStreamForFile = fs.createReadStream(gifFilePath);
     const options = {
@@ -137,6 +140,7 @@ export async function POST(req: NextRequest) {
       },
     };
     const res = await pinata.pinFileToIPFS(readableStreamForFile, options);
+    console.log(res);
     const { IpfsHash } = res;
 
     const gifUrl = `https://ipfs.io/ipfs/${IpfsHash}`;
@@ -160,6 +164,7 @@ export async function POST(req: NextRequest) {
       { status: 200 },
     );
   } catch (e) {
+    console.log(e);
     await kv.set<RandomNumberRequestStateValue>(
       uniqueId,
       {
