@@ -4,6 +4,7 @@ import { RandomNumberRequestStateValue } from "./types";
 import { kv } from "@vercel/kv";
 import { getFrameMessage } from "frames.js";
 
+export const maxDuration = 25; // This function can run for a maximum of 5 seconds
 const MAXIMUM_KV_RESULT_LIFETIME_IN_SECONDS = 10 * 60; // 10 minutes
 
 export async function POST(req: NextRequest) {
