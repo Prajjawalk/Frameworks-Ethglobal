@@ -119,9 +119,10 @@ export async function POST(req: NextRequest) {
 
     // Convert MP4 to GIF using FFmpeg
     const gifFilePath = `/tmp/output-${playbackId}.gif`;
+    fs.closeSync(fs.openSync(gifFilePath, "w"));
     await new Promise<void>((resolve, reject) => {
       exec(
-        `npx ffmpeg -i ${mp4FilePath} -vf "fps=10,scale=320:-1:flags=lanczos" -c:v gif -loop 0 ${gifFilePath}`,
+        `npx ffmpeg -i ${mp4FilePath} -vf "fps=10,scale=320:-1:flags=lanczos" -c:v gif -loop 0 ${gifFilePath} --loglevel=verbose`,
         error => {
           if (error) {
             console.log(error);
